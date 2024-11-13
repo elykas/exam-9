@@ -14,6 +14,7 @@ export const launchMissile = async (
     }
   
     await updateMissileCount(userId, missileName, -1);
+    
     io.to(region).emit("missile_launched", { region, missileName });
 
     const missile = await Missile.findOne({name:missileName})

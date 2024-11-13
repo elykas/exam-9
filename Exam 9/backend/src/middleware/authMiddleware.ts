@@ -21,12 +21,12 @@ export const verifyTokenAttack = (
     res.status(401).json({ message: "Access token missing" });
     return;
   }
-
+const status = ["IDF - North", "IDF - South", "IDF - Center", "IDF - West Bank"]
   try {
     const decoded: any = jwt.verify(token, JWT_SECRET);
     (req as any).user = decoded;
 
-    if (["IDF - North", "IDF - South", "IDF - Center", "IDF - West Bank"].includes(decoded.organization)) {
+    if (status.includes(decoded.organization)) {
       throw new Error("Invalid token: No defense ");
     }
 
