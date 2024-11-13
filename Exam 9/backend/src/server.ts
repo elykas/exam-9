@@ -1,12 +1,13 @@
-import  express,{Request,Response}  from "express";
+import  express  from "express";
 import dotenv from "dotenv";
 import connectDb from "./config/db";
-import cookieParser from "cookie-parser";
 import cors  from "cors"
-import routerAuths from "./routes/auth";
+import routerAuths from "./routes/authRouter";
 import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from "mongoose";
+import { initializeSocketServer } from "./sockets/webSocket";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -17,7 +18,6 @@ connectDb();
 
 
 app.use(express.json());
-app.use(cookieParser());
 app.use(cors());
 
 app.use('/api',routerAuths)
@@ -27,11 +27,12 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173/candidates/socket", // Change this to your frontend URL
-      methods: ["GET", "POST"]
+      origin: "*"
     }
   });
 
+  initializeSocketServer(io);
 
-server.listen(PORT,()=>{console.log("server is running in port " + PORT);
+  app.use(errorHandler);
+app.listen(PORT,()=>{console.log("server is running in port " + PORT);
 })

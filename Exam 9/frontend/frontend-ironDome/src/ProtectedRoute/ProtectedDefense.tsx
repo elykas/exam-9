@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { fetchUserByTokenAttack, logout } from "../store/features/authSlice/authSlice";
+import { fetchUserByTokenAttack, fetchUserByTokenDefense, logout } from "../store/features/authSlice/authSlice";
 
 
 
@@ -12,11 +12,11 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { token ,user} = useSelector((state: RootState) => state.auth);
+    const { token ,user,status} = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
          if (token && status === 'idle' && !user ) {
-      dispatch(fetchUserByTokenAttack());
+      dispatch(fetchUserByTokenDefense());
     }
   }, [dispatch,token,user]);
       

@@ -18,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await dispatch(login({ username, password }));
-      navigate(`/candidates`);
+      navigate(`/attack`);
 
     } catch (error) {
       console.error("cannot login");

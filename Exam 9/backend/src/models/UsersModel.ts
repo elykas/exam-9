@@ -6,7 +6,7 @@ export interface IUser extends Document {
   organization: mongoose.Types.ObjectId;
 }
 
-interface IOrganization extends Document {
+export interface IOrganization extends Document {
   name: string;
   budget: number;
   resources: IResource[];

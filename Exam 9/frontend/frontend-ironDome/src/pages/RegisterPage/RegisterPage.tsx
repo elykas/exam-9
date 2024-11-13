@@ -11,6 +11,8 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [invalidRegister, setInvalidRegister] = useState(false);
+  const [organization, setOrganization] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -18,10 +20,11 @@ const Register = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(register({ username, password }));
+      const organizationToSend = organization === "IDF" ? location : organization;
+      await dispatch(register({ username, password, organization: organizationToSend }));
       navigate(`/`);
     } catch (error) {
-      console.error("cannot login");
+      console.error("cannot register");
       setInvalidRegister(true);
     } finally {
       setUsername("");
@@ -29,17 +32,9 @@ const Register = () => {
     }
   };
 
-  const [organization, setOrganization] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-
   const handleOrganizationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrganization(e.target.value);
     setLocation(""); 
-  };
-
-  const locations = {
-    idf: ["Location 1", "Location 2", "Location 3"],
-    other: ["Location A", "Location B"]
   };
 
   return (

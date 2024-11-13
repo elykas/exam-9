@@ -26,12 +26,7 @@ export const verifyTokenAttack = (
     const decoded: any = jwt.verify(token, JWT_SECRET);
     (req as any).user = decoded;
 
-    if (
-      decoded.organization !== "IDF - North" &&
-      decoded.organization !== "IDF - South" &&
-      decoded.organization !== "IDF - Center" &&
-      decoded.organization !== "IDF - West Bank"
-    ) {
+    if (["IDF - North", "IDF - South", "IDF - Center", "IDF - West Bank"].includes(decoded.organization)) {
       throw new Error("Invalid token: No defense ");
     }
 

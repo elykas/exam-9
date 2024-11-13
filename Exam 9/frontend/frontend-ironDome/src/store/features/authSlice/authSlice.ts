@@ -13,8 +13,9 @@ const BASE_URL = `${import.meta.env.VITE_API_URL}`;
 
 export const register = createAsyncThunk(
   "auth/register",
-  async (userData: { username: string; password: string }, { rejectWithValue }) => {
+  async (userData: { username: string; password: string,organization:string }, { rejectWithValue }) => {
     try {
+        
       const response = await axios.post(`${BASE_URL}/register`, userData);
       return response.data.data;
     } catch (error:any) {
@@ -62,7 +63,7 @@ export const fetchUserByTokenDefense = createAsyncThunk(
     "auth/fetchUserByTokenDefense",
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axios.get(`${BASE_URL}/auth/user/attack`, {
+        const response = await axios.get(`${BASE_URL}/auth/user/defense`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

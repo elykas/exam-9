@@ -1,5 +1,5 @@
 import  express, { Router }  from "express";
-import { getUserByToken} from "../controllers/authController";
+import { getUserByToken, insertMissiles, login, register} from "../controllers/authController";
 import { verifyTokenAttack, verifyTokenForDefense } from "../middleware/authMiddleware";
 
 
@@ -7,10 +7,10 @@ import { verifyTokenAttack, verifyTokenForDefense } from "../middleware/authMidd
 
 const router:Router = express.Router();
 
-//router.route("/").get(insertMissiles)
+router.route('/register').post(register);
+router.route('/login').post(login);
+router.route("/").get(insertMissiles)
 router.get('/auth/user/attack', verifyTokenAttack, getUserByToken);
 router.get('/auth/user/defense', verifyTokenForDefense, getUserByToken);
-router.route('/register').post();
-router.route('/login').post();
 
 export default router;

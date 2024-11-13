@@ -4,7 +4,7 @@
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgb(214, 213, 213);
     margin-top: 6%;
-    height: 350px;
+    height: 480px;
     width: 400px;
     padding: 40px;
     display: flex;
@@ -17,6 +17,18 @@
 }
 
 .register-form input{
+    display: flex;
+    margin-bottom: 25px;
+     border-radius: 4px;
+    box-shadow: 2px 2px 8px rgb(214, 213, 213);
+    border: transparent;
+    height: 25px;
+    width: 95%;
+
+}
+
+
+.register-form select{
     display: flex;
     margin-bottom: 25px;
      border-radius: 4px;
