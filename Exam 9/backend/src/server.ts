@@ -6,6 +6,7 @@ import cors  from "cors"
 import routerAuths from "./routes/auth";
 import http from 'http';
 import { Server } from 'socket.io';
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ app.use(cors());
 app.use('/api',routerAuths)
 
 const server = http.createServer(app);
+
+
 const io = new Server(server, {
     cors: {
       origin: "http://localhost:5173/candidates/socket", // Change this to your frontend URL
