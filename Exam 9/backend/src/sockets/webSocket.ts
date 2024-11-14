@@ -1,9 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { launchMissile } from "../services/attackService";
+import { interceptMissile } from "../services/defenseService";
 
 export const initializeSocketServer = (io: Server) => {
   io.on("connection", (socket: Socket) => {
-    console.log(`A client connected: ${socket.id}`);
+    console.log(`A client connected`);
 
     socket.on("join_room", (region: string) => {
       socket.join(region);
@@ -11,6 +12,8 @@ export const initializeSocketServer = (io: Server) => {
     });
 
     socket.on("launch-missile", async ({ userId, region, missileName }) => {
+        console.log("launch miisile");
+        
         try {
           await launchMissile(io, userId, region, missileName);
         } catch (error:any) {
@@ -18,12 +21,12 @@ export const initializeSocketServer = (io: Server) => {
         }
       });
 
-      socket.on("intercept-missile", ({ region, missileName, success }) => {
-        io.to(region).emit("interception_result", {
-          missileName,
-          region,
-          result: success ? "success" : "Defense",
-        });
+      socket.on("intercept_missile", async ({ userId, region, missileName, interceptorName, remainingTime }) => {
+        try {
+          await interceptMissile(io, userId, region, missileName, interceptorName, remainingTime);
+        } catch (error: any) {
+          socket.emit("error", { message: error.message });
+        }
       });
 
     socket.on("leave_room", (region: string) => {

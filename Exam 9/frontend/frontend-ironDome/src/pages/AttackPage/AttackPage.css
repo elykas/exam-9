@@ -1,0 +1,63 @@
+.attack-page{
+    margin-left:30% ;
+    margin-top: 6%;
+    margin-right: 30%;
+    border: transparent;
+    box-shadow: 2px 2px 10px rgb(192, 191, 191);
+    border-radius: 12px;
+    padding: 60px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.nav-bar{
+    border: transparent;
+    box-shadow: 2px 2px 10px rgb(192, 191, 191);
+    border-radius: 12px;
+    margin: 40px;
+    padding: 20px;
+}
+
+.nav-bar h3{
+    margin: 10px;
+    margin-left: 15px;
+}
+
+.nav-bar button{
+    margin: 10px;
+    background-color: rgb(232, 232, 232);
+    box-shadow: 1px 1px 5px rgb(192, 191, 191);
+
+    border: transparent;
+    padding: 10px;
+
+}
+
+.nav-bar button:hover{
+    box-shadow: 2px 2px 10px rgb(192, 191, 191);
+    border-radius: 12px;
+}
+
+.nav-bar span{
+    margin: 7px;
+}
+
+
+.attack-page table{
+    border: 1px solid rgb(147, 146, 146);
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px gainsboro;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.attack-page th {
+    height: 50px;
+    border:1px solid rgb(214, 212, 212); 
+    border-radius: 8px;
+}
+
+.attack-page td{
+    height: 35px;
+    border:1px solid rgb(214, 212, 212); 
+    border-radius: 8px;
+}

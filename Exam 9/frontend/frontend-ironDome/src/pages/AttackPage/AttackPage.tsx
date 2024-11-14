@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Missile } from "../../types/userType";
 import { io } from "socket.io-client";
-
+import "./AttackPage.css"
 
 const AttackPage = () => {
    
@@ -13,11 +13,14 @@ const AttackPage = () => {
         const socket = io("http://localhost:5000");
         useEffect(() => {
             if (location) {
-                socket.emit("join_room", `IDF - ${location}`);
+              const roomName = `IDF - ${location}`;
+                socket.emit("join_room", roomName);
               }
           
             socket.on("missile-launched", (data) => {
               setMissiles((prev) => [...prev, { ...data, status: "Launched" }]);
+              console.log(data);
+              
             });
         
             socket.on("missile-inAir", (data) => {
@@ -37,13 +40,16 @@ const AttackPage = () => {
             });
             return () => {
                 if (location) {
-                    socket.emit("leave_room", location);
+                  const roomName = `IDF - ${location}`;
+                    socket.emit("leave_room", roomName);
                   }
                   socket.disconnect();
                 };
               }, [location]);
 
             const handleLaunchMissile = (missileName: string) => {
+              console.log("333");
+              
                 socket.emit("launch-missile", { userId: user?._id, region: location, missileName });
               };
       
@@ -52,7 +58,7 @@ const AttackPage = () => {
       <h1>Organization: {user?.organization.name}</h1>
       <div className="nav-bar">
         <h3>Avaliable Ammo</h3>
-        <div>
+        <div >
         <label>Location</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
           <option value="North">North</option>

@@ -36,5 +36,5 @@ const io = new Server(server, {
   initializeSocketServer(io);
 
   app.use(errorHandler);
-app.listen(PORT,()=>{console.log("server is running in port " + PORT);
+server.listen(PORT,()=>{console.log("server is running in port " + PORT);
 })

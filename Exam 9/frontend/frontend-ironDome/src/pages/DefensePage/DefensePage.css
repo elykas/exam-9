@@ -25,3 +25,24 @@
 .nav-bar span{
     margin: 7px;
 }
+
+
+.defense-page table{
+    border: 1px solid rgb(147, 146, 146);
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px gainsboro;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.defense-page th {
+    height: 50px;
+    border:1px solid rgb(214, 212, 212); 
+    border-radius: 8px;
+}
+
+.defense-page td{
+    height: 35px;
+    border:1px solid rgb(214, 212, 212); 
+    border-radius: 8px;
+}
