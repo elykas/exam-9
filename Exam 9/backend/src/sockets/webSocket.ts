@@ -12,7 +12,8 @@ export const initializeSocketServer = (io: Server) => {
     });
 
     socket.on("launch-missile", async ({ userId, region, missileName }) => {
-        console.log("launch miisile");
+        console.log("launch missile");
+        console.log(region);
         
         try {
           await launchMissile(io, userId, region, missileName);

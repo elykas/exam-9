@@ -1,26 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
 import { Missile } from "../../types/userType";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import "./AttackPage.css"
+import { fetchUserByTokenAttack } from "../../store/features/authSlice/authSlice";
 
 const AttackPage = () => {
    
         const { user } = useSelector((state: RootState) => state.auth);
         const [location, setLocation] = useState("");
         const [missiles, setMissiles] = useState<Missile[]>([]);
+        const [missileResources, setMissileResources] = useState(
+          user?.organization.resources.map((resource) => ({ ...resource })));
         const socket = io("http://localhost:5000");
+        const dispatch = useDispatch<AppDispatch>();
+        const socketRef = useRef<Socket | null>(null);
+
         useEffect(() => {
+          if (!socketRef.current) {
+            socketRef.current = io("http://localhost:5000");
+          }
+      
+          const socket = socketRef.current;
+      
+        
             if (location) {
               const roomName = `IDF - ${location}`;
+              console.log(roomName);
+              
                 socket.emit("join_room", roomName);
               }
+              
           
             socket.on("missile-launched", (data) => {
               setMissiles((prev) => [...prev, { ...data, status: "Launched" }]);
               console.log(data);
-              
+
             });
         
             socket.on("missile-inAir", (data) => {
@@ -48,10 +64,17 @@ const AttackPage = () => {
               }, [location]);
 
             const handleLaunchMissile = (missileName: string) => {
-              console.log("333");
+              const roomName = `IDF - ${location}`;
               
-                socket.emit("launch-missile", { userId: user?._id, region: location, missileName });
-              };
+                socket.emit("launch-missile", { userId: user?._id, region: roomName, missileName });
+                setMissileResources((prevResources) =>
+                  prevResources?.map((resource) =>
+                    resource.name === missileName && resource.amount > 0
+                      ? { ...resource, amount: resource.amount - 1 }
+                      : resource
+                  )
+                );
+              };;
       
   return (
     <div className="attack-page">
@@ -61,6 +84,7 @@ const AttackPage = () => {
         <div >
         <label>Location</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
+          <option value="">Select</option>
           <option value="North">North</option>
           <option value="South">South</option>
           <option value="East">East</option>

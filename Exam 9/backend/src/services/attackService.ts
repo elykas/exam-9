@@ -13,20 +13,23 @@ export const launchMissile = async (
     if (missileCount <= 0) {
       throw new Error(`No ${missileName} missiles available `);
     }
-  
-    await updateMissileCount(userId, missileName, -1);
     
-    io.to(region).emit("missile-launched", { region, missileName });
-
-
+    await updateMissileCount(userId, missileName, -1);
+    console.log(region);
+    
+    
+    
     const missile = await Missile.findOne({name:missileName})
-  
+    
     const hitTime = missile?.speed;
     if(!hitTime){
         return
     }
+    console.log(hitTime);
     
     let timeToHit = hitTime;
+    io.to(region).emit("missile-launched", { region, missileName,timeToHit });
+    
     const intervalId = setInterval(() => {
       if (timeToHit <= 0) {
         clearInterval(intervalId);
