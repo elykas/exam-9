@@ -23,14 +23,14 @@ export const launchMissile = async (
     if(!hitTime){
         return
     }
-    let count = hitTime;
+    let timeToHit = hitTime;
     const intervalId = setInterval(() => {
-      if (count <= 0) {
+      if (timeToHit <= 0) {
         clearInterval(intervalId);
         io.to(region).emit("missile-hit", { region, missileName });
       } else {
-        io.to(region).emit("missile-inAir", { region, missileName, count });
-        count--;
+        io.to(region).emit("missile-inAir", { region, missileName, timeToHit });
+        timeToHit--;
       }
     }, 1000);
   };

@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
     children: React.ReactElement;
   }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+const ProtectedRouteAttack: React.FC<ProtectedRouteProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { token ,user,status} = useSelector((state: RootState) => state.auth);
 
@@ -32,4 +32,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       return children 
 }
 
-export default ProtectedRoute;
+export default ProtectedRouteAttack;

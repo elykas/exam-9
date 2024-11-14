@@ -7,10 +7,10 @@ export const initializeSocketServer = (io: Server) => {
 
     socket.on("join_room", (region: string) => {
       socket.join(region);
-      console.log(`Client ${socket.id} joined region ${region}`);
+      console.log(`joined region ${region}`);
     });
 
-    socket.on("launch_missile", async ({ userId, region, missileName }) => {
+    socket.on("launch-missile", async ({ userId, region, missileName }) => {
         try {
           await launchMissile(io, userId, region, missileName);
         } catch (error:any) {
@@ -18,7 +18,7 @@ export const initializeSocketServer = (io: Server) => {
         }
       });
 
-      socket.on("intercept_missile", ({ region, missileName, success }) => {
+      socket.on("intercept-missile", ({ region, missileName, success }) => {
         io.to(region).emit("interception_result", {
           missileName,
           region,

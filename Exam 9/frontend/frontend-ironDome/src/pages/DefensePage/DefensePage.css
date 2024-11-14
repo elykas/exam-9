@@ -1,0 +1,27 @@
+.defense-page{
+    margin-left:30% ;
+    margin-top: 6%;
+    margin-right: 30%;
+    border: transparent;
+    box-shadow: 2px 2px 10px rgb(192, 191, 191);
+    border-radius: 12px;
+    padding: 60px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.nav-bar{
+    border: transparent;
+    box-shadow: 2px 2px 10px rgb(192, 191, 191);
+    border-radius: 12px;
+    margin: 40px;
+    padding: 20px;
+}
+
+.nav-bar h3{
+    margin: 10px;
+    margin-left: 15px;
+}
+
+.nav-bar span{
+    margin: 7px;
+}

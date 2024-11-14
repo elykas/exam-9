@@ -12,6 +12,10 @@ const AttackPage = () => {
         const [missiles, setMissiles] = useState<Missile[]>([]);
         const socket = io("http://localhost:5000");
         useEffect(() => {
+            if (location) {
+                socket.emit("join_room", `IDF - ${location}`);
+              }
+          
             socket.on("missile-launched", (data) => {
               setMissiles((prev) => [...prev, { ...data, status: "Launched" }]);
             });
@@ -32,14 +36,15 @@ const AttackPage = () => {
               );
             });
             return () => {
-                socket.off("missile-launched");
-                socket.off("missile-inAir");
-                socket.off("missile-hit");
-              };
-            }, []);
+                if (location) {
+                    socket.emit("leave_room", location);
+                  }
+                  socket.disconnect();
+                };
+              }, [location]);
 
             const handleLaunchMissile = (missileName: string) => {
-                socket.emit("launch_missile", { userId: user?.username, region: location, missileName });
+                socket.emit("launch-missile", { userId: user?._id, region: location, missileName });
               };
       
   return (
@@ -72,11 +77,11 @@ const AttackPage = () => {
           </tr>
         </thead>
         <tbody>
-          {missiles.map((rocket, index) => (
+          {missiles.map((missile, index) => (
             <tr key={index}>
-              <td>{}</td>
-              <td>{}</td>
-              <td>{}</td>
+              <td>{missile.missileName}</td>
+              <td>{missile.timeToHit}</td>
+              <td>{missile.status}</td>
             </tr>
           ))}
         </tbody>

@@ -2,60 +2,54 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { io } from "socket.io-client";
-import { Missile } from "../../types/userType";
-
+import { Missile, missleData } from "../../types/userType";
+import "./DefensePage.css"
 const DefensePage = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [missiles, setMissiles] = useState<Missile[]>([]);
   const socket = io("http://localhost:5000");
+  const missilesData = missleData;
 
   useEffect(() => {
-    socket.on("missile_launched", (data: Missile) => {
-        setMissiles((prevMissiles) => [
-          ...prevMissiles,
-          { ...data, status: "Launched", timeToHit: data.timeToHit },
+    if (user?.organization.name) {
+        socket.emit("join_room", user.organization.name);
+      }
+    socket.on("missile-launched", (data: Missile) => {
+        setMissiles((prevMissiles) => [...prevMissiles,{ ...data, status: "Launched", timeToHit: data.timeToHit },
         ]);
       });
 
-    socket.on("missile_hit", (data) => {
+    socket.on("missile-hit", (data) => {
       setMissiles((prevMissiles) =>
-        prevMissiles.map((missile) =>
-          missile.missileName === data.missileName
-            ? { ...missile, status: "Hit" }
-            : missile
+        prevMissiles.map((missile) => missile.missileName === data.missileName? { ...missile, status: "Hit" }: missile
         )
       );
     });
 
-    socket.on("interception_success", (data) => {
+    socket.on("interception-success", (data) => {
       setMissiles((prevMissiles) =>
-        prevMissiles.map((missile) =>
-          missile.missileName === data.missileName
-            ? { ...missile, status: "Intercepted" }
-            : missile
-        )
-      );
-    });
-
-    socket.on("interception_failed", (data) => {
-      setMissiles((prevMissiles) =>
-        prevMissiles.map((missile) =>
-          missile.missileName === data.missileName
-            ? { ...missile, status: "Interception Failed" }
-            : missile
+        prevMissiles.map((missile) => missile.missileName === data.missileName?
+       { ...missile, status: "Intercepted" }: missile
         )
       );
     });
 
     return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
+        if (user?.organization.name) {
+            socket.emit("leave_room", user.organization.name);
+          }
+          socket.disconnect();
+        };
+      }, [socket, user]);
 
-  const interceptMissile = (missileName, remainingTime) => {
-    const interceptorName = "Iron Dome"; 
+  const handleInterceptMissile = (missileName:string, remainingTime:number| undefined,region:string) => {
+    if (!remainingTime) return;
+    const interceptorName = missilesData.filter((interceptor) =>
+        interceptor.intercepts.includes(missileName)
+      );
+    
     socket.emit("intercept_missile", {
-      region: "North",
+      region,
       missileName,
       interceptorName,
       remainingTime,
@@ -75,7 +69,7 @@ const DefensePage = () => {
         </div>
       </div>
         <h2>Launched Rockets</h2>
-        <table style={{ width: "100%", border: "1px solid black", borderCollapse: "collapse", marginTop: "10px" }}>
+        <table >
         <thead>
           <tr>
             <th>Rocket</th>
@@ -91,7 +85,13 @@ const DefensePage = () => {
               <td>{missile.status}</td>
               <td>
                 {missile.status === "Launched" && (
-                  <button onClick={() => interceptMissile(missile.missileName, missile.timeToHit)}>Intercept</button>
+                  <button
+                    onClick={() =>
+                      handleInterceptMissile(missile.missileName, missile.timeToHit,missile.region)
+                    }
+                  >
+                    Intercept
+                  </button>
                 )}
               </td>
             </tr>
