@@ -16,7 +16,6 @@ const AttackPage = () => {
         const socket = io("http://localhost:5000");
         const dispatch = useDispatch<AppDispatch>();
         const socketRef = useRef<Socket | null>(null);
-
         useEffect(() => {
           if (!socketRef.current) {
             socketRef.current = io("http://localhost:5000");
@@ -24,7 +23,6 @@ const AttackPage = () => {
       
           const socket = socketRef.current;
       
-        
             if (location) {
               const roomName = `IDF - ${location}`;
               console.log(roomName);
@@ -54,15 +52,19 @@ const AttackPage = () => {
                 )
               );
             });
+            if (location) {
+              const roomName = `IDF - ${location}`;
+              socket.emit("join_room", roomName);
+        
+              return () => {
+                socket.emit("leave_room", roomName);
+              };
+            }
+        
             return () => {
-                if (location) {
-                  const roomName = `IDF - ${location}`;
-                    socket.emit("leave_room", roomName);
-                  }
-                  socket.disconnect();
-                };
-              }, [location]);
-
+              socket.disconnect();
+            };
+          }, []); 
             const handleLaunchMissile = (missileName: string) => {
               const roomName = `IDF - ${location}`;
               
