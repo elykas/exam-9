@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { io } from "socket.io-client";
+import { Missile } from "../../types/userType";
 
 const DefensePage = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [missiles, setMissiles] = useState([]);
-  const socket = io("http://localhost:5000"); // Replace with your server URL
+  const [missiles, setMissiles] = useState<Missile[]>([]);
+  const socket = io("http://localhost:5000");
 
   useEffect(() => {
-    socket.on("missile_launched", (data) => {
-      setMissiles((prevMissiles) => [
-        ...prevMissiles,
-        { ...data, status: "Launched", timeToHit: data.timeToHit },
-      ]);
-    });
+    socket.on("missile_launched", (data: Missile) => {
+        setMissiles((prevMissiles) => [
+          ...prevMissiles,
+          { ...data, status: "Launched", timeToHit: data.timeToHit },
+        ]);
+      });
 
     socket.on("missile_hit", (data) => {
       setMissiles((prevMissiles) =>
@@ -51,7 +53,7 @@ const DefensePage = () => {
   }, [socket]);
 
   const interceptMissile = (missileName, remainingTime) => {
-    const interceptorName = "Iron Dome"; // Example interceptor name
+    const interceptorName = "Iron Dome"; 
     socket.emit("intercept_missile", {
       region: "North",
       missileName,

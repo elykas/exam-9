@@ -30,14 +30,12 @@ export const interceptMissile = async (
       region,
       missileName,
       interceptorName,
-      result: "Interception successful",
     });
   } else {
     io.to(region).emit("interception_failed", {
       region,
       missileName,
       interceptorName,
-      result: "Interception failed: Insufficient time",
     });
   }
 };

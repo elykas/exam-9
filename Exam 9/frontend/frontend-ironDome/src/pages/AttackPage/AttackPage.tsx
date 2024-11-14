@@ -1,10 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { Missile } from "../../types/userType";
+import { io } from "socket.io-client";
+
 
 const AttackPage = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+   
+        const { user } = useSelector((state: RootState) => state.auth);
+        const [location, setLocation] = useState("");
+        const [missiles, setMissiles] = useState<Missile[]>([]);
+        const socket = io("http://localhost:5000");
+        useEffect(() => {
+            socket.on("missile-launched", (data) => {
+              setMissiles((prev) => [...prev, { ...data, status: "Launched" }]);
+            });
+        
+            socket.on("missile-inAir", (data) => {
+              setMissiles((prev) =>
+                prev.map((missile) =>
+                  missile.missileName === data.missileName ? { ...missile, timeToHit: data.count } : missile
+                )
+              );
+            });
+        
+            socket.on("missile-hit", (data) => {
+              setMissiles((prev) =>
+                prev.map((missile) =>
+                  missile.missileName === data.missileName ? { ...missile, status: "Hit" } : missile
+                )
+              );
+            });
+            return () => {
+                socket.off("missile-launched");
+                socket.off("missile-inAir");
+                socket.off("missile-hit");
+              };
+            }, []);
 
+            const handleLaunchMissile = (missileName: string) => {
+                socket.emit("launch_missile", { userId: user?.username, region: location, missileName });
+              };
+      
   return (
     <div className="attack-page">
       <h1>Organization: {user?.organization.name}</h1>
@@ -18,15 +55,15 @@ const AttackPage = () => {
           <option value="East">East</option>
           <option value="West">West</option>
         </select>
-          {user?.organization.resources.map((resource, index) => (
-            <span key={index}>
+        {user?.organization.resources.map((resource, index) => (
+            <button key={index} onClick={() => handleLaunchMissile(resource.name)}>
               {resource.name}: {resource.amount}
-            </span>
+            </button>
           ))}
         </div>
       </div>
         <h2>Launched Rockets</h2>
-        <table style={{ width: "100%", border: "1px solid black", borderCollapse: "collapse", marginTop: "10px" }}>
+        <table>
         <thead>
           <tr>
             <th>Rocket</th>
@@ -35,7 +72,7 @@ const AttackPage = () => {
           </tr>
         </thead>
         <tbody>
-          {user?.organization.resources.map((rocket, index) => (
+          {missiles.map((rocket, index) => (
             <tr key={index}>
               <td>{}</td>
               <td>{}</td>

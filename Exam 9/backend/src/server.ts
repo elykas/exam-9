@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDb from "./config/db";
 import cors  from "cors"
 import routerAuths from "./routes/authRouter";
+import routerMissile from "./routes/missileRoutes";
 import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from "mongoose";
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api',routerAuths)
+app.use('/api',routerMissile)
 
 const server = http.createServer(app);
 

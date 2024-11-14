@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { launchMissile } from "../services/attackService";
 
 export const initializeSocketServer = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -9,17 +10,21 @@ export const initializeSocketServer = (io: Server) => {
       console.log(`Client ${socket.id} joined region ${region}`);
     });
 
-    socket.on("launch_missile", ({ region, missileName }) => {
-      io.to(region).emit("missile_launched", { missileName, region });
-    });
-
-    socket.on("intercept_missile", ({ region, missileName, success }) => {
-      io.to(region).emit("interception_result", {
-        missileName,
-        region,
-        result: success ? "success" : "Defense",
+    socket.on("launch_missile", async ({ userId, region, missileName }) => {
+        try {
+          await launchMissile(io, userId, region, missileName);
+        } catch (error:any) {
+          socket.emit("error", { message: error.message });
+        }
       });
-    });
+
+      socket.on("intercept_missile", ({ region, missileName, success }) => {
+        io.to(region).emit("interception_result", {
+          missileName,
+          region,
+          result: success ? "success" : "Defense",
+        });
+      });
 
     socket.on("leave_room", (region: string) => {
       socket.leave(region);

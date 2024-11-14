@@ -9,6 +9,13 @@ interface IResource {
     budget: number;
     resources: IResource[];
   }
+
+  export interface Missile {
+    region: string;
+    missileName: string;
+    status: string;
+    timeToHit?: number;
+  };
   
   export interface IUser {
     username: string;

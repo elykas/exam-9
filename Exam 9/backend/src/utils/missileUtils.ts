@@ -33,11 +33,11 @@ export const getMissilesForOrganization = (organizationName: string) => {
     );
     
     if (!missile) {
-      throw new Error(`Missile ${missileName} not found in organization's inventory`);
+      throw new Error(`Missile ${missileName} not found`);
     }
   
     if (missile.amount + change < 0) {
-      throw new Error(`Not enough missiles of type ${missileName}`);
+      throw new Error(`Not enough missile ${missileName}`);
     }
   
     missile.amount += change;

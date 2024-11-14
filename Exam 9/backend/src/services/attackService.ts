@@ -15,15 +15,25 @@ export const launchMissile = async (
   
     await updateMissileCount(userId, missileName, -1);
     
-    io.to(region).emit("missile_launched", { region, missileName });
+    io.to(region).emit("missile-launched", { region, missileName });
 
     const missile = await Missile.findOne({name:missileName})
   
-    const HitTime = missile?.speed;
-    if(!HitTime){
+    const hitTime = missile?.speed;
+    if(!hitTime){
         return
     }
-    setTimeout(() => {
-      io.to(region).emit("missile_hit", { region, missileName });
-    }, HitTime * 1000);
+    let count = hitTime;
+    const intervalId = setInterval(() => {
+      if (count <= 0) {
+        clearInterval(intervalId);
+        io.to(region).emit("missile-hit", { region, missileName });
+      } else {
+        io.to(region).emit("missile-inAir", { region, missileName, count });
+        count--;
+      }
+    }, 1000);
   };
+
+   
+  
