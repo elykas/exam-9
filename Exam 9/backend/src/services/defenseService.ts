@@ -7,23 +7,24 @@ export const interceptMissile = async (
   userId: string,
   region: string,
   missileName: string,
-  interceptorName: string
+  interceptorName: string,
+  remainingTime:number
 ) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
   
-  const missile = await Missile.findOne({ name: missileName });
   const interceptor = await Missile.findOne({ name: interceptorName });
   
-  if (!missile || !interceptor) throw new Error("Missile or Interceptor not found");
+  if (!interceptor) throw new Error("Missile or Interceptor not found");
  
   const missileCount = await getMissileCount(userId, interceptorName);
-  if (missileCount <= 0) throw new Error(`No ${interceptorName} `);
+  if (missileCount <= 0) throw new Error(`No ${interceptorName} left`);
 
-  const timeToImpact = missile.speed; 
   const interceptorTime = interceptor.speed; 
 
-  if (interceptorTime <= timeToImpact) {
+  const canIntercept = interceptor.intercepts.includes(missileName)
+
+  if (interceptorTime > remainingTime && canIntercept ) {
     await updateMissileCount(userId, interceptorName, -1);
     io.to(region).emit("interception_success", {
       region,

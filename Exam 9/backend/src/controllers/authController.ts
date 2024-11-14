@@ -59,7 +59,8 @@ export const login = async (
 export const getUserByToken = async (req: any, res: Response, next: NextFunction) => {
     try {
         const userId:any = req.user._id; 
-        const user = await User.findById(userId).select("-password"); 
+        const user = await User.findById(userId).select("-password").populate("organization");
+
         
         if (!user) {
              res.status(404).json(new ResponseStructure(false, "User not found"));
